@@ -67,44 +67,13 @@ for i in IBC['text']:
     clear.append(clean_text(i))
 IBC['Text Clear'] = clear
 
-# Transformando texto em vetor numérico 
-# Bag of words 
-bow_converter = CountVectorizer (tokenizer = lambda doc: doc,lowercase=False)
-x=bow_converter.fit_transform(IBC['Text Clear'])
-palavra = bow_converter.get_feature_names()
+# Transformando os rotulos de previsão em valores binarios 
+binary = pd.get_dummies(IBC['classification'])
+for j in binary.columns:
+    IBC[j] = binary[j]
 
-# Bag of n-Grams
-# Bigram 
-bigram_converter = CountVectorizer(tokenizer=lambda doc: doc,ngram_range=[2,2],lowercase=False) 
-x2 = bigram_converter.fit_transform(IBC['Text Clear'])
-bigrams = bigram_converter.get_feature_names()
-
-# Trigram
-trigram_converter = CountVectorizer(tokenizer=lambda doc: doc,ngram_range=[3,3],lowercase=False)
-x3 = trigram_converter.fit_transform(IBC['Text Clear'])
-trigrams = trigram_converter.get_feature_names()
-
-# Tf-Idf
-tfidf_transform = text.TfidfTransformer(norm=None)
-X_tr_tfidf = tfidf_transform.fit_transform(x)
-
-# Criando amostras de teste e treino 
-training_data, test_data = train_test_split(IBC,train_size =0.7, random_state = 42)
-
-# Transformando os dados bag of words 
-bow_transform = CountVectorizer(tokenizer=lambda doc: doc, ngram_range=[3,3], lowercase=False)
-
-# Criando amostra de treino 
-X_tr_bow = bow_transform.fit_transform(training_data['Text Clear'])
-
-# Criando amostra de teste 
-X_te_bow = bow_transform.transform(test_data['Text Clear'])
-
-# Criando rotulos de treinos e teste 
-y_tr = training_data['classification']
-y_te = test_data['classification']
-
-# Transformação Tf-Idf 
-tfidf_transform = text.TfidfTransformer(norm=None)
-X_tr_tfidf = tfidf_transform.fit_transform(X_tr_bow)
-X_te_tfidf = tfidf_transform.transform(X_te_bow)
+# Export clearning data
+col = banco['IBC_clear'] 
+for i in range(len(IBC['text'])):
+    dic = {'texto':IBC['text'].iloc[i], 'clear':IBC['Text Clear'].iloc[i],'classificação': IBC['classification'].iloc[i]}
+    col.insert_one(dic)
