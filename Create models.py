@@ -59,7 +59,6 @@ for category in categorias:
     print('Test accuracy is {}'.format(accuracy_score(test[category], prediction)))
 
 
-
 # Tfidf
 # MultinomialNB
 NB_pipeline = Pipeline([('tfidf', TfidfVectorizer(stop_words=stop_words)),('clf', OneVsRestClassifier(MultinomialNB(fit_prior=True, class_prior=None)))])

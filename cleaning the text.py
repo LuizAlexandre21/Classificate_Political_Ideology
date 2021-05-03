@@ -67,13 +67,10 @@ for i in IBC['text']:
     clear.append(clean_text(i))
 IBC['Text Clear'] = clear
 
-# Transformando os rotulos de previsão em valores binarios 
-binary = pd.get_dummies(IBC['classification'])
-for j in binary.columns:
-    IBC[j] = binary[j]
+
 
 # Export clearning data
 col = banco['IBC_clear'] 
 for i in range(len(IBC['text'])):
-    dic = {'texto':IBC['text'].iloc[i], 'clear':IBC['Text Clear'].iloc[i],'classificação': IBC['classification'].iloc[i]}
+    dic = {'texto':IBC['text'].iloc[i],'clear':IBC['Text Clear'].iloc[i],'classificação': IBC['classification'].iloc[i]}
     col.insert_one(dic)
