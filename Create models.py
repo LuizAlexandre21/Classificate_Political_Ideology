@@ -49,14 +49,14 @@ NB_pipeline = Pipeline([('bow', CountVectorizer(tokenizer=lambda doc: doc, ngram
 for category in categorias:
     NB_pipeline.fit(X_train,train[category])
     prediction = NB_pipeline.predict(X_test)
-    print('Test accuracy is {}'.format(accuracy_score(test[category], prediction)))
+    print('Test accuracy is Multinomial {}'.format(accuracy_score(test[category], prediction)))
 
 # Logistic Regression 
 Logit = Pipeline([('bow',CountVectorizer(tokenizer=lambda doc: doc, ngram_range=[3,3], lowercase=False)),('clf',OneVsRestClassifier(LogisticRegression(C=1.0,class_weight=None,dual=False,fit_intercept=True,intercept_scaling=1,max_iter=100,multi_class='ovr',n_jobs=1,penalty='l2',random_state=None,solver='liblinear',tol=0.0001,verbose=0)))])
 for category in categorias:
     NB_pipeline.fit(X_train,train[category])
     prediction = NB_pipeline.predict(X_test)
-    print('Test accuracy is {}'.format(accuracy_score(test[category], prediction)))
+    print('Test accuracy is Logit {}'.format(accuracy_score(test[category], prediction)))
 
 
 # Tfidf
@@ -65,13 +65,34 @@ NB_pipeline = Pipeline([('tfidf', TfidfVectorizer(stop_words=stop_words)),('clf'
 for category in categorias:
     NB_pipeline.fit(X_train,train[category])
     prediction = NB_pipeline.predict(X_test)
-    print('Test accuracy is {}'.format(accuracy_score(test[category], prediction)))
+    print('Test accuracy is Multinomial{}'.format(accuracy_score(test[category], prediction)))
 
 # Logistic Regression 
 Logit = Pipeline([('tfidf',TfidfVectorizer(stop_words=stop_words)),('clf',OneVsRestClassifier(LogisticRegression(C=1.0,class_weight=None,dual=False,fit_intercept=True,intercept_scaling=1,max_iter=100,multi_class='ovr',n_jobs=1,penalty='l2',random_state=None,solver='liblinear',tol=0.0001,verbose=0)))])
 for category in categorias:
     NB_pipeline.fit(X_train,train[category])
     prediction = NB_pipeline.predict(X_test)
-    print('Test accuracy is {}'.format(accuracy_score(test[category], prediction)))
+    print('Test accuracy is Logit{}'.format(accuracy_score(test[category], prediction)))
 
+# Importando os twitters dos candidatos
+collections2 = banco['Twitters']
+Twitter = pd.DataFrame(list(collections2.find()))
+
+# Recriando os modelos 
+# MultinomialNB
+Multinomial = Pipeline([('tfidf', TfidfVectorizer(stop_words=stop_words)),('clf', OneVsRestClassifier(MultinomialNB(fit_prior=True, class_prior=None)))])
+for category in categorias:
+    Multinomial.fit(IBC['texto'],IBC[category])
+    prediction = Multinomial.predict(Twitter['twitter'])
+    print(prediction)
+    print(category)
+
+
+# Logistic Regression
+Logit = Pipeline([('tfidf',TfidfVectorizer(stop_words=stop_words)),('clf',OneVsRestClassifier(LogisticRegression(C=1.0,class_weight=None,dual=False,fit_intercept=True,intercept_scaling=1,max_iter=100,multi_class='ovr',n_jobs=1,penalty='l2',random_state=None,solver='liblinear',tol=0.0001,verbose=0)))])
+for category in categorias:
+    Logit.fit(IBC['texto'],IBC[category])
+    prediction = Logit.predict(Twitter['twitter'])
+    print(category)
+    print(prediction)
 

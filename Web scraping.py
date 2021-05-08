@@ -2,6 +2,7 @@
 from selenium import webdriver 
 import time 
 from pymongo import MongoClient
+from deep_translator import GoogleTranslator
 
 # Criando um cliente com o mongodb
 cliente = MongoClient('localhost',27017)
@@ -40,7 +41,7 @@ for perfil in perfis:
 
     # Salvando as mensagens de texto
     for i in range(3):
-        twitter = html2[i].text
+        twitter = GoogleTranslator(source='auto', target='en').translate(html2[i].text)
         perfil = perfil 
         dic = {'twitter':twitter,'perfil':perfil}
         col.insert_one(dic)
